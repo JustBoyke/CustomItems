@@ -1,14 +1,16 @@
 name: CustomItems
 main: me.boykev.cit.Main
 author: boykev
-website: http://www.boykevanvugt.nl
-version: 1.0BETA
+website: https://www.boykevanvugt.nl
+version: 1.6BETA
 api-version: 1.12
 api: "1.12"
 commands:
   nbt:
-    description: Tikkie main command.
+    description: Debug commando.
   mtgive:
-    description: Tikkie main command.
+    description: Geef jezelf een item met een mtcustom tag.
   gcitems:
-    description: Main commando.
+    description: Krijg de lijst met custom items of voeg een item toe.
+  customitems:
+    description: Informatie over de plugin.
