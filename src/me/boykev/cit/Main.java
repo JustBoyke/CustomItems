@@ -84,13 +84,19 @@ public class Main extends JavaPlugin{
 		Player p = (Player) sender;
 		cm = new ConfigManager(this);
 		if(cmd.getName().equalsIgnoreCase("nbt")) {
-			if(!p.hasPermission("nbt.command")) {
+			if(!p.hasPermission("customitems.nbt")) {
 				p.sendMessage(ChatColor.RED + "Sorry, je hebt niet de benodigde permissies");
 				p.sendTitle(ChatColor.RED + "Error!", ChatColor.WHITE + "Je hebt niet de juiste perms!", 10, 60, 10);
 				p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 100, 1);
 				return false;
 			}
 			if(args[0].equalsIgnoreCase("set")) {
+				if(!p.hasPermission("customitems.nbt.set")) {
+					p.sendMessage(ChatColor.RED + "Sorry, je hebt niet de benodigde permissies");
+					p.sendTitle(ChatColor.RED + "Error!", ChatColor.WHITE + "Je hebt niet de juiste perms!", 10, 60, 10);
+					p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 100, 1);
+					return false;
+				}
 				if(args.length < 3) {
 					p.sendMessage(ChatColor.RED + "Oeps, het commando is niet juist gebruikt.");
 					p.sendMessage(ChatColor.BLUE + "/nbt set [tagname] [tag]");
@@ -108,16 +114,20 @@ public class Main extends JavaPlugin{
 				return false;
 			}
 			if(args[0].equalsIgnoreCase("check")) {
+				if(!p.hasPermission("customitems.nbt.check")) {
+					p.sendMessage(ChatColor.RED + "Sorry, je hebt niet de benodigde permissies");
+					p.sendTitle(ChatColor.RED + "Error!", ChatColor.WHITE + "Je hebt niet de juiste perms!", 10, 60, 10);
+					p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 100, 1);
+					return false;
+				}
 				if(args.length < 2) {
 					ItemStack i = p.getInventory().getItemInMainHand();
 					NBTItem it = new NBTItem(i);
 					for(String s : it.getKeys()) {
 						String comp = it.getString(s);
 						p.sendMessage(ChatColor.RED + s + " : " + comp);
-						
 					}
 					return false;
-					
 				}
 				ItemStack i = p.getInventory().getItemInMainHand();
 				NBTItem it = new NBTItem(i);
@@ -143,6 +153,12 @@ public class Main extends JavaPlugin{
 					p.sendMessage(ChatColor.BLUE + "/gcitems help - daar kijk je nu naar.");
 				}
 				if(args[0].equalsIgnoreCase("add")) {
+					if(!p.hasPermission("customitems.gcitems.add")) {
+						p.sendMessage(ChatColor.RED + "Sorry, je hebt niet de benodigde permissies");
+						p.sendTitle(ChatColor.RED + "Error!", ChatColor.WHITE + "Je hebt niet de juiste perms!", 10, 60, 10);
+						p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 100, 1);
+						return false;
+					}
 					ItemStack i = p.getInventory().getItemInMainHand();
 					NBTItem it = new NBTItem(i);
 					if(!it.hasKey("mtcustom")) {
