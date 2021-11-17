@@ -1,6 +1,5 @@
 package me.boykev.cit;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -26,7 +25,7 @@ public class Main extends JavaPlugin{
 		Player p = (Player) sender;
 		if(cmd.getName().equalsIgnoreCase("testitem")) {
 			if(args[0].equalsIgnoreCase("give")) {
-				ItemStack item = new ItemStack(Material.WHEAT_SEEDS);
+				ItemStack item = new ItemStack(Material.WHEAT);
 				
 				NBTItem nbti = new NBTItem(item);
 				nbti.setString("test", "test2");
@@ -39,13 +38,7 @@ public class Main extends JavaPlugin{
 				p.sendMessage(ChatColor.RED + it.getString(args[1]));
 				return false;
 			}
-			if(args[0].equalsIgnoreCase("stand")) {
-				Bukkit.dispatchCommand(sender, "summon minecraft:armor_stand ~ ~ ~ {Invisible:1,ShowArms:1,ArmorItems:[{id:air,Count:1,tag:{Damage:0}},{id:air,Count:1,tag:{Damage:0}},{id:air,Count:1,tag:{Damage:0}},{id:air,Count:1,tag:{Damage:0}}],HandItems:[{id:diamond_pickaxe,Count:1,tag:{Damage:255}},{id:air,Count:1,tag:{Damage:0}}],Pose:{Body:[0.0f,-3.92f,0.0f],Head:[4.34f,8.91f,0.0f],LeftLeg:[-1.0f,0.0f,-1.0f],RightLeg:[1.0f,0.0f,1.0f],LeftArm:[-10.0f,0.0f,-10.0f],RightArm:[-0.0f,-90.0f,-90.0f]}}");
-				return false;
-			}
-			
 		}
-		
 		if(cmd.getName().equalsIgnoreCase("setnbt")) {
 			ItemStack item = p.getInventory().getItemInMainHand();
 			String nbttag = args[0];
@@ -58,7 +51,6 @@ public class Main extends JavaPlugin{
 			p.sendMessage(ChatColor.GREEN + "NBT Tag toegepast!");
 			return false;
 		}
-		
 		return false;
 	}
 	
