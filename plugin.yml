@@ -1,9 +1,10 @@
-name: testitem
+name: CustomItems
 main: me.boykev.cit.Main
 author: boykev
-website: http://www.fire-mc.nl
+website: http://www.boykevanvugt.nl
 version: 1.0BETA
-api-version: 1.14
+api-version: 1.12
+api: "1.12"
 commands:
   testitem:
     description: Tikkie main command.
