@@ -8,3 +8,5 @@ api: "1.12"
 commands:
   nbt:
     description: Tikkie main command.
+  mtgive:
+    description: Tikkie main command.

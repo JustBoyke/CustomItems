@@ -8,12 +8,14 @@ import java.io.OutputStream;
 import java.net.URL;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -36,6 +38,7 @@ public class Main extends JavaPlugin{
 		is.close();
 		os.close();
 	}
+	public ConfigManager cm;
 		
 	public void onEnable() {
 		Log.info("Staat aan");
@@ -53,12 +56,21 @@ public class Main extends JavaPlugin{
 				pm.disablePlugin(this);
 				} 
 			}
+			cm = new ConfigManager(this);
+			cm.LoadDefaults();
 		}
 		
 	}
 	
 	public void onDisable() {
 		System.out.println(ChatColor.RED + "Staat uit!");
+	}
+	
+	public Integer getAmount(String count) {
+		if(count == null) {
+			return Integer.valueOf(1);
+		}
+		return Integer.valueOf(count);
 	}
 	
 	
@@ -94,7 +106,7 @@ public class Main extends JavaPlugin{
 					NBTItem it = new NBTItem(i);
 					for(String s : it.getKeys()) {
 						String comp = it.getString(s);
-						p.sendMessage(ChatColor.RED + comp + " : " + s);
+						p.sendMessage(ChatColor.RED + s + " : " + comp);
 						
 					}
 					return false;
@@ -105,9 +117,46 @@ public class Main extends JavaPlugin{
 				p.sendMessage(ChatColor.RED + it.getString(args[1]));
 				return false;
 			}
+			if(args[0].equalsIgnoreCase("info")) {
+				ItemStack i = p.getInventory().getItemInMainHand();
+				Bukkit.broadcastMessage(i.toString());
+			}
 		}
 		if(cmd.getName().equalsIgnoreCase("mtgive")) {
+			if(!p.hasPermission("nbt.mtgive")) {
+				p.sendMessage(ChatColor.RED + "Sorry, je hebt niet de benodigde permissies");
+				p.sendTitle(ChatColor.RED + "Error!", ChatColor.WHITE + "Je hebt niet de juiste perms!", 10, 60, 10);
+				p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 100, 1);
+				return false;
+			}
+			if(args.length < 2) {
+				p.sendMessage(ChatColor.RED + "Oeps, het commando is niet juist gebruikt.");
+				p.sendMessage(ChatColor.BLUE + "/mtgive [item] [mtcustom tag] [aantal] (customname)");
+				return false;
+			}
+			Material m = Material.matchMaterial(args[0]);
 			
+			if(m == null) {
+				p.sendMessage(ChatColor.RED + "Het item is niet gevonden.");
+				return false;
+			}
+			if(args.length < 3) {
+				ItemStack i = new ItemStack(m, 1);
+				NBTItem it = new NBTItem(i);
+				it.setString("mtcustom", args[1]);
+				p.getInventory().addItem(it.getItem());
+			}else {
+				ItemStack i = new ItemStack(m, getAmount(args[2]));
+				if(args.length > 3) {
+					ItemMeta im = i.getItemMeta();
+					im.setDisplayName(ChatColor.translateAlternateColorCodes('&', args[3]));
+					i.setItemMeta(im);
+				}
+				NBTItem it = new NBTItem(i);
+				it.setString("mtcustom", args[1]);
+				p.getInventory().addItem(it.getItem());
+			}
+
 		}
 		return false;
 	}
