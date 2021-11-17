@@ -21,6 +21,6 @@ Permissions:
   
   
 WIP:  
-- [ ] #1
+- [ ] Add next page option, see: https://github.com/JustBoyke/CustomItems/issues/1
   
 Developed by: Boyke (@Boyke#2021)  
