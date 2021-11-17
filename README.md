@@ -21,6 +21,6 @@ Permissions:
   
   
 WIP:  
-- [ ] Next page systeem toevoegen in custom item menu.  
+- [ ] #1
   
 Developed by: Boyke (@Boyke#2021)  
