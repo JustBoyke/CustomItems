@@ -6,7 +6,5 @@ version: 1.0BETA
 api-version: 1.12
 api: "1.12"
 commands:
-  testitem:
-    description: Tikkie main command.
-  setnbt:
+  nbt:
     description: Tikkie main command.
