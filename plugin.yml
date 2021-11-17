@@ -5,6 +5,7 @@ website: https://www.boykevanvugt.nl
 version: 1.6BETA
 api-version: 1.12
 api: "1.12"
+depend: [NBTAPI]
 commands:
   nbt:
     description: Debug commando.
