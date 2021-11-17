@@ -10,3 +10,5 @@ commands:
     description: Tikkie main command.
   mtgive:
     description: Tikkie main command.
+  gcitems:
+    description: Main commando.

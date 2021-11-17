@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,6 +15,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
@@ -56,9 +58,9 @@ public class Main extends JavaPlugin{
 				pm.disablePlugin(this);
 				} 
 			}
-			cm = new ConfigManager(this);
-			cm.LoadDefaults();
 		}
+		cm = new ConfigManager(this);
+		cm.LoadDefaults();
 		
 	}
 	
@@ -73,9 +75,11 @@ public class Main extends JavaPlugin{
 		return Integer.valueOf(count);
 	}
 	
+	public Inventory test = Bukkit.createInventory(null, 54, ChatColor.RED + "Testmenu");
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
+		cm = new ConfigManager(this);
 		if(cmd.getName().equalsIgnoreCase("nbt")) {
 			if(!p.hasPermission("nbt.command")) {
 				p.sendMessage(ChatColor.RED + "Sorry, je hebt niet de benodigde permissies");
@@ -122,6 +126,52 @@ public class Main extends JavaPlugin{
 				Bukkit.broadcastMessage(i.toString());
 			}
 		}
+		if(cmd.getName().equalsIgnoreCase("gcitems")) {
+			if(!p.hasPermission("customitems.gcitems")) {
+				p.sendMessage(ChatColor.RED + "Sorry, je hebt niet de benodigde permissies");
+				p.sendTitle(ChatColor.RED + "Error!", ChatColor.WHITE + "Je hebt niet de juiste perms!", 10, 60, 10);
+				p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 100, 1);
+				return false;
+			}
+			if(args.length > 0) {
+				if(args[0].equalsIgnoreCase("help")) {
+					p.sendMessage(ChatColor.BLUE + "/gcitems - opent het menu met custom items.");
+					p.sendMessage(ChatColor.BLUE + "/gcitems add - voegt het item in je inventory toe aan de lijst.");
+					p.sendMessage(ChatColor.BLUE + "/gcitems help - daar kijk je nu naar.");
+				}
+				if(args[0].equalsIgnoreCase("add")) {
+					ItemStack i = p.getInventory().getItemInMainHand();
+					NBTItem it = new NBTItem(i);
+					if(!it.hasKey("mtcustom")) {
+						p.sendMessage(ChatColor.RED + "Dit is geen MT Item of heeft geen MT Data.");
+						System.out.println(it.getCompound());
+						return false;
+					}
+					if(cm.getConfig().get("items." + it.getString("mtcustom")) != null) {
+						Random random = new Random();
+						Integer rand = random.nextInt(50+(80000));
+						cm.editConfig().set("items." + it.getString("mtcustom") + String.valueOf(rand), i);
+						cm.save();
+						p.sendMessage(ChatColor.GREEN + "Het item is opgeslagen!");
+						return false;
+					}
+					cm.editConfig().set("items." + it.getString("mtcustom"), i);
+					cm.save();
+					p.sendMessage(ChatColor.GREEN + "Het item is opgeslagen!");
+				}
+				return false;
+			}
+			test.clear();
+			int i = 0;
+			for(String s : cm.getConfig().getConfigurationSection("items").getKeys(true)){
+				if(i < 54) {
+					ItemStack item = cm.getConfig().getItemStack("items." + s);
+					test.setItem(i,item);
+					i++;
+				}
+			}
+			p.openInventory(test);
+		}
 		if(cmd.getName().equalsIgnoreCase("mtgive")) {
 			if(!p.hasPermission("nbt.mtgive")) {
 				p.sendMessage(ChatColor.RED + "Sorry, je hebt niet de benodigde permissies");
@@ -156,7 +206,6 @@ public class Main extends JavaPlugin{
 				it.setString("mtcustom", args[1]);
 				p.getInventory().addItem(it.getItem());
 			}
-
 		}
 		return false;
 	}
