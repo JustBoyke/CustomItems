@@ -1,0 +1,11 @@
+name: testitem
+main: me.boykev.cit.Main
+author: boykev
+website: http://www.fire-mc.nl
+version: 1.0BETA
+api-version: 1.14
+commands:
+  testitem:
+    description: Tikkie main command.
+  setnbt:
+    description: Tikkie main command.
