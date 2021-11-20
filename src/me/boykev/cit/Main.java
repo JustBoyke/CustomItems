@@ -125,6 +125,14 @@ public class Main extends JavaPlugin{
 				p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 100, 1);
 				return false;
 			}
+			if(lic.dataInfo(p) == false) {
+				return false;
+			}
+			if(args.length < 1) {
+				p.sendMessage(ChatColor.BLUE + "/nbt check - Laat alle tags op een items in je hand zien.");
+				p.sendMessage(ChatColor.BLUE + "/nbt set - voegt een custom tag toe aan een item.");
+				return false;
+			}
 			if(args[0].equalsIgnoreCase("set")) {
 				if(!p.hasPermission("customitems.nbt.set")) {
 					p.sendMessage(ChatColor.RED + "Sorry, je hebt niet de benodigde permissies");
@@ -138,6 +146,10 @@ public class Main extends JavaPlugin{
 					return false;
 				}
 				ItemStack item = p.getInventory().getItemInMainHand();
+				if(p.getInventory().getItemInMainHand().getType() == Material.AIR) {
+					p.sendMessage(ChatColor.RED + "Je hebt geen item in je hand.");
+					return false;
+				}
 				String nbttag = args[1];
 				String tag = args[2];
 				
@@ -157,6 +169,10 @@ public class Main extends JavaPlugin{
 				}
 				if(args.length < 2) {
 					ItemStack i = p.getInventory().getItemInMainHand();
+					if(p.getInventory().getItemInMainHand().getType() == Material.AIR) {
+						p.sendMessage(ChatColor.RED + "Je hebt geen item in je hand.");
+						return false;
+					}
 					NBTItem it = new NBTItem(i);
 					for(String s : it.getKeys()) {
 						String comp = it.getString(s);
@@ -165,13 +181,13 @@ public class Main extends JavaPlugin{
 					return false;
 				}
 				ItemStack i = p.getInventory().getItemInMainHand();
+				if(p.getInventory().getItemInMainHand().getType() == Material.AIR) {
+					p.sendMessage(ChatColor.RED + "Je hebt geen item in je hand.");
+					return false;
+				}
 				NBTItem it = new NBTItem(i);
 				p.sendMessage(ChatColor.RED + it.getString(args[1]));
 				return false;
-			}
-			if(args[0].equalsIgnoreCase("info")) {
-				ItemStack i = p.getInventory().getItemInMainHand();
-				Bukkit.broadcastMessage(i.toString());
 			}
 		}
 		if(cmd.getName().equalsIgnoreCase("gcitems")) {
@@ -179,6 +195,9 @@ public class Main extends JavaPlugin{
 				p.sendMessage(ChatColor.RED + "Sorry, je hebt niet de benodigde permissies");
 				p.sendTitle(ChatColor.RED + "Error!", ChatColor.WHITE + "Je hebt niet de juiste perms!", 10, 60, 10);
 				p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 100, 1);
+				return false;
+			}
+			if(lic.dataInfo(p) == false) {
 				return false;
 			}
 			if(args.length > 0) {
@@ -195,6 +214,10 @@ public class Main extends JavaPlugin{
 						return false;
 					}
 					ItemStack i = p.getInventory().getItemInMainHand();
+					if(p.getInventory().getItemInMainHand().getType() == Material.AIR) {
+						p.sendMessage(ChatColor.RED + "Je hebt geen item in je hand.");
+						return false;
+					}
 					NBTItem it = new NBTItem(i);
 					if(!it.hasKey("mtcustom")) {
 						p.sendMessage(ChatColor.RED + "Dit is geen MT Item of heeft geen MT Data.");
@@ -217,6 +240,10 @@ public class Main extends JavaPlugin{
 			}
 			test.clear();
 			int i = 0;
+			if(cm.getConfig().getConfigurationSection("items") == null) {
+				p.sendMessage(ChatColor.RED + "Er staan nog geen items in de lijst!");
+				return false;
+			}
 			for(String s : cm.getConfig().getConfigurationSection("items").getKeys(true)){
 				if(i < 54) {
 					ItemStack item = cm.getConfig().getItemStack("items." + s);
@@ -231,6 +258,9 @@ public class Main extends JavaPlugin{
 				p.sendMessage(ChatColor.RED + "Sorry, je hebt niet de benodigde permissies");
 				p.sendTitle(ChatColor.RED + "Error!", ChatColor.WHITE + "Je hebt niet de juiste perms!", 10, 60, 10);
 				p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 100, 1);
+				return false;
+			}
+			if(lic.dataInfo(p) == false) {
 				return false;
 			}
 			if(args.length < 2) {
