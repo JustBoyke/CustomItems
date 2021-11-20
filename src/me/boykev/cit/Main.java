@@ -25,6 +25,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import de.tr7zw.nbtapi.NBTItem;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class Main extends JavaPlugin{
@@ -44,9 +46,12 @@ public class Main extends JavaPlugin{
 		os.close();
 	}
 	public ConfigManager cm;
+	public String Status;
+	public licenseInfo lic;
 		
 	public void onEnable() {
 		Log.info("Staat aan");
+		PluginDescriptionFile pdf = this.getDescription();
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		if(pm.isPluginEnabled("NBTAPI")) {
 			Log.info("API Is gevonden en actief");
@@ -64,6 +69,35 @@ public class Main extends JavaPlugin{
 		}
 		cm = new ConfigManager(this);
 		cm.LoadDefaults();
+		if(cm.getConfig().getString("key").equals("-")) {
+			lic = new licenseInfo(this);
+			String plname = pdf.getName();
+			lic.createLicense();
+			System.out.println(ChatColor.GREEN + plname + " plugin heeft automatisch een licentie aangemaakt!");
+		}
+		if(!cm.getConfig().getString("key").equals("-")) {
+	    	String plname = pdf.getName();
+	    	lic = new licenseInfo(this);
+	    	if(lic.getLicense().equalsIgnoreCase("Valid")) {
+	    		System.out.println(ChatColor.GREEN + plname + " plugin opgestart!");
+	    	}
+	    	if(lic.getLicense().equalsIgnoreCase("Abuse")) {
+	    		Bukkit.broadcastMessage(ChatColor.YELLOW + "Deze server abused de " + plname + "!");
+	    		System.out.println(ChatColor.RED + plname + " plugin niet opgestart wegens abuse van de TOS");
+	    		lic.licenseAbuse();
+	    	}
+	    	if(lic.getLicense().equalsIgnoreCase("Edit")) {
+	    		Bukkit.broadcastMessage(ChatColor.YELLOW + "Deze server abused de " + plname + " plugin door edits te maken!");
+	    		System.out.println(ChatColor.RED + plname + " plugin niet opgestart wegens abuse van de TOS");
+	    		lic.licenseAbuse();
+	    	}
+	    	if(lic.getLicense().equalsIgnoreCase("Failed")) {
+	    		System.out.println(ChatColor.RED + plname + " plugin niet opgestart door een fout in het licentiesysteem");
+	    		lic.licenseError();
+	    	}
+		}
+		
+		
 		
 	}
 	
@@ -83,6 +117,7 @@ public class Main extends JavaPlugin{
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
 		cm = new ConfigManager(this);
+		lic = new licenseInfo(this);
 		if(cmd.getName().equalsIgnoreCase("nbt")) {
 			if(!p.hasPermission("customitems.nbt")) {
 				p.sendMessage(ChatColor.RED + "Sorry, je hebt niet de benodigde permissies");
@@ -240,11 +275,22 @@ public class Main extends JavaPlugin{
 	        
 	        TextComponent version = new TextComponent(TextComponent.fromLegacyText(ChatColor.GREEN + "Versie: " + pdf.getVersion()));
 	        version.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/customitems pling"));
+	       
 			
 			p.sendMessage(ChatColor.GRAY + "---- [ Custom Items ] ----");
 			p.spigot().sendMessage(version);
 			p.spigot().sendMessage(component);
 			p.sendMessage(ChatColor.GREEN + "Website: https://boykevanvugt.nl");
+			if(lic.getLicense().equalsIgnoreCase("Valid")) {
+				TextComponent license = new TextComponent(TextComponent.fromLegacyText(ChatColor.GREEN + "Licentie: Valid!"));
+		        license.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Deze licentie is actief en geverrifieerd").create()));
+		        p.spigot().sendMessage(license);
+			}else {
+				TextComponent license = new TextComponent(TextComponent.fromLegacyText(ChatColor.RED + "Licentie: Valid!"));
+		        license.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Deze licentie is geblokkeerd of niet actief!").create()));
+		        p.spigot().sendMessage(license);
+		        p.playSound(p.getLocation(), Sound.ITEM_TOTEM_USE, 100F,1.0F);
+			}
 			p.sendMessage(ChatColor.GRAY + "----------------------");
 		}
 		return false;
