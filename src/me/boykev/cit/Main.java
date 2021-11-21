@@ -219,11 +219,6 @@ public class Main extends JavaPlugin{
 						return false;
 					}
 					NBTItem it = new NBTItem(i);
-					if(!it.hasKey("mtcustom")) {
-						p.sendMessage(ChatColor.RED + "Dit is geen MT Item of heeft geen MT Data.");
-						System.out.println(it.getCompound());
-						return false;
-					}
 					if(cm.getConfig().get("items." + it.getString("mtcustom")) != null) {
 						Random random = new Random();
 						Integer rand = random.nextInt(50+(80000));
