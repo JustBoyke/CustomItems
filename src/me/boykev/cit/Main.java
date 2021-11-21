@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -80,6 +81,7 @@ public class Main extends JavaPlugin{
 	    	lic = new licenseInfo(this);
 	    	if(lic.getLicense().equalsIgnoreCase("Valid")) {
 	    		System.out.println(ChatColor.GREEN + plname + " plugin opgestart!");
+	    		pm.registerEvents(new inventoryEvents(this), this);
 	    	}
 	    	if(lic.getLicense().equalsIgnoreCase("Abuse")) {
 	    		Bukkit.broadcastMessage(ChatColor.YELLOW + "Deze server abused de " + plname + "!");
@@ -112,7 +114,7 @@ public class Main extends JavaPlugin{
 		return Integer.valueOf(count);
 	}
 	
-	public Inventory test = Bukkit.createInventory(null, 54, ChatColor.RED + "Testmenu");
+	public Inventory test = Bukkit.createInventory(null, 54, ChatColor.RED + "GC Items");
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
@@ -218,18 +220,48 @@ public class Main extends JavaPlugin{
 						p.sendMessage(ChatColor.RED + "Je hebt geen item in je hand.");
 						return false;
 					}
-					NBTItem it = new NBTItem(i);
-					if(cm.getConfig().get("items." + it.getString("mtcustom")) != null) {
+					UUID id = UUID.randomUUID();
+					String stringid = id.toString();
+					String nbttag = "identifier";
+					String tag = stringid;
+					NBTItem nbti = new NBTItem(i);
+					nbti.setString(nbttag, tag);
+					p.getInventory().remove(i);
+					p.getInventory().addItem(nbti.getItem());
+					ItemStack i2 = p.getInventory().getItemInMainHand();
+					if(cm.getConfig().get("items." + stringid) != null) {
 						Random random = new Random();
 						Integer rand = random.nextInt(50+(80000));
-						cm.editConfig().set("items." + it.getString("mtcustom") + String.valueOf(rand), i);
+						cm.editConfig().set("items." + stringid + String.valueOf(rand), i2);
 						cm.save();
 						p.sendMessage(ChatColor.GREEN + "Het item is opgeslagen!");
 						return false;
 					}
-					cm.editConfig().set("items." + it.getString("mtcustom"), i);
+					cm.editConfig().set("items." + stringid, i2);
 					cm.save();
 					p.sendMessage(ChatColor.GREEN + "Het item is opgeslagen!");
+				}
+				if(args[0].equalsIgnoreCase("remove")) {
+					if(p.getInventory().getItemInMainHand().getType() == Material.AIR) {
+						p.sendMessage(ChatColor.RED + "Je hebt geen item in je hand.");
+						return false;
+					}
+					ItemStack i = p.getInventory().getItemInMainHand();
+					NBTItem nbti = new NBTItem(i);
+					if(nbti.getString("identifier") == null) {
+						p.sendMessage(ChatColor.RED + "Dit items staat niet in de database of mist de identifier. GEEN IDT");
+						return false;
+					}
+					String id = nbti.getString("identifier");
+					if(cm.getConfig().get("items." + id) == null) {
+						p.sendMessage(ChatColor.RED + "Dit items staat niet in de database of mist de identifier.");
+						p.sendMessage(id);
+						return false;
+					}
+					cm.editConfig().set("items." + id, null);
+					cm.save();
+					p.sendMessage(ChatColor.RED + "Item Verwijderd uit de database!");
+					return false;
 				}
 				return false;
 			}
