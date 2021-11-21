@@ -207,6 +207,7 @@ public class Main extends JavaPlugin{
 					p.sendMessage(ChatColor.BLUE + "/gcitems - opent het menu met custom items.");
 					p.sendMessage(ChatColor.BLUE + "/gcitems add - voegt het item in je inventory toe aan de lijst.");
 					p.sendMessage(ChatColor.BLUE + "/gcitems help - daar kijk je nu naar.");
+					p.sendMessage(ChatColor.BLUE + "/gcitems remove - Verwijderd het item in je inventory uit de database.");
 				}
 				if(args[0].equalsIgnoreCase("add")) {
 					if(!p.hasPermission("customitems.gcitems.add")) {
