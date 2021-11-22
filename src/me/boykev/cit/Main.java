@@ -107,7 +107,7 @@ public class Main extends JavaPlugin{
 	
 	public void onDisable() {
 		System.out.println(ChatColor.RED + "Staat uit!");
-		HandlerList.unregisterAll();
+		HandlerList.unregisterAll(this);
 	}
 	
 	public Integer getAmount(String count) {
