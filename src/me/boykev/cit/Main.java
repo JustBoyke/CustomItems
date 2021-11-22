@@ -231,16 +231,15 @@ public class Main extends JavaPlugin{
 					nbti.setString(nbttag, tag);
 					p.getInventory().removeItem(i);
 					p.getInventory().addItem(nbti.getItem());
-					ItemStack i2 = p.getInventory().getItemInMainHand();
 					if(cm.getConfig().get("items." + stringid) != null) {
 						Random random = new Random();
 						Integer rand = random.nextInt(50+(80000));
-						cm.editConfig().set("items." + stringid + String.valueOf(rand), i2);
+						cm.editConfig().set("items." + stringid + String.valueOf(rand), nbti.getItem());
 						cm.save();
 						p.sendMessage(ChatColor.GREEN + "Het item is opgeslagen!");
 						return false;
 					}
-					cm.editConfig().set("items." + stringid, i2);
+					cm.editConfig().set("items." + stringid, nbti.getItem());
 					cm.save();
 					p.sendMessage(ChatColor.GREEN + "Het item is opgeslagen!");
 				}
