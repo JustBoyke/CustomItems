@@ -2,7 +2,7 @@ name: CustomItems
 main: me.boykev.cit.Main
 author: boykev
 website: https://www.boykevanvugt.nl
-version: 2.2BETA
+version: 2.3BETA
 api-version: 1.12
 api: "1.12"
 depend: [NBTAPI]
