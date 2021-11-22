@@ -20,6 +20,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -229,8 +230,11 @@ public class Main extends JavaPlugin{
 					String tag = stringid;
 					NBTItem nbti = new NBTItem(i);
 					nbti.setString(nbttag, tag);
-					p.getInventory().removeItem(i);
-					p.getInventory().addItem(nbti.getItem());
+					MaterialData it = nbti.getItem().getData();
+					ItemMeta mt = nbti.getItem().getItemMeta();
+					p.getInventory().getItemInMainHand().setData(it);
+					p.getInventory().getItemInMainHand().setItemMeta(mt);
+					p.updateInventory();
 					if(cm.getConfig().get("items." + stringid) != null) {
 						Random random = new Random();
 						Integer rand = random.nextInt(50+(80000));
