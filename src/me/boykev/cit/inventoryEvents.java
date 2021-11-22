@@ -25,28 +25,28 @@ public class inventoryEvents implements Listener {
 		cm = new ConfigManager(instance);
 		if(inv.equalsIgnoreCase(ChatColor.RED + "GC Items")) {
 			e.setCancelled(true);
+			Player p = (Player) e.getWhoClicked();
+			if(e.getCurrentItem() == null) {
+				return;
+			}
+			ItemStack item = e.getCurrentItem();
+			if(item.getType() == Material.AIR) {
+				return;
+			}
+			NBTItem nbti = new NBTItem(item);
+			String id = nbti.getString("identifier");
+			if (id == null) {
+				return;
+			}
+			if(cm.getConfig().get("items." + id) == null) {
+				return;
+			}
+			ItemStack i = cm.getConfig().getItemStack("items." + id);
+			if(i == null) {
+				return;
+			}
+			p.getInventory().addItem(i);
 		}
-		Player p = (Player) e.getWhoClicked();
-		if(e.getCurrentItem() == null) {
-			return;
-		}
-		ItemStack item = e.getCurrentItem();
-		if(item.getType() == Material.AIR) {
-			return;
-		}
-		NBTItem nbti = new NBTItem(item);
-		String id = nbti.getString("identifier");
-		if (id == null) {
-			return;
-		}
-		if(cm.getConfig().get("items." + id) == null) {
-			return;
-		}
-		ItemStack i = cm.getConfig().getItemStack("items." + id);
-		if(i == null) {
-			return;
-		}
-		p.getInventory().addItem(i);
 	}
 	
 }
