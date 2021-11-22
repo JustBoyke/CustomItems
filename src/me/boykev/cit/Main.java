@@ -16,6 +16,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -105,6 +106,7 @@ public class Main extends JavaPlugin{
 	
 	public void onDisable() {
 		System.out.println(ChatColor.RED + "Staat uit!");
+		HandlerList.unregisterAll();
 	}
 	
 	public Integer getAmount(String count) {
@@ -227,7 +229,7 @@ public class Main extends JavaPlugin{
 					String tag = stringid;
 					NBTItem nbti = new NBTItem(i);
 					nbti.setString(nbttag, tag);
-					p.getInventory().remove(i);
+					p.getInventory().removeItem(i);
 					p.getInventory().addItem(nbti.getItem());
 					ItemStack i2 = p.getInventory().getItemInMainHand();
 					if(cm.getConfig().get("items." + stringid) != null) {
